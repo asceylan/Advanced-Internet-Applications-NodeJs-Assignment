@@ -1,0 +1,86 @@
+<%- include('./partials/header'); -%>
+<div class="container mt-3">
+    <% if ( sessionFlash && sessionFlash.message) { %>
+        <div class="row">
+            <div class="<%= sessionFlash.type === 'success' ? 'alert alert-success' : 'alert alert-danger' %> alert-dismissible fade show  col-md-12" role="alert">
+                <strong>MESSAGE!</strong> <%= sessionFlash.message %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+            </div>
+        </div>
+    <% } %>
+
+    <div class="row">
+
+        <% if(products) { %>
+        <div class="col-md-9">
+
+            <h4 class="card-title card shadow-sm">
+                <div class="row pl-5 pr-5 p-3">
+                    <b>Shopping Cart</b> <span class="ml-auto">
+                        <form action="/checkout/delete" method="post">
+                            <button type="submit" class="btn btn-outline-danger"><i
+                                    class="fas fa-trash-alt mr-2"></i>Empty Cart</button>
+                        </form>
+                    </span>
+                </div>
+            </h4>
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <% var totalPrice = 0; %>
+                    <% products.forEach(function(product, idx, array){ %>
+                    <% totalPrice += product.item.price; %>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <img src="/<%= product.item.photo %>" class="img-fluid">
+
+                            <form action="/checkout/delete/<%= product.item._id %>" method="post">
+                                <button class="btn btn-sm btn-outline-danger mt-1 btn-block"><i
+                                        class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                        <div class="col-md-8 mt-3">
+                            <b class="col-md-12"><%= product.item.name %></b>
+                            <div class="col-md-12 mt-2">$<%= product.item.price %></div>
+                        </div>
+                    </div>
+                    <% if (idx !== array.length - 1){ %>
+                    <hr>
+                    <% } %>
+                    <% }); %>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 shadow order-summary">
+                <h5 class="text-center"><b>Order Summary</b></h5>
+                <hr>
+                <div class="col-md-12 row">
+                    <h6 class="col-md-9"><b>Total:</b></h6>
+                    <div class="col-md-3 text-center">$<%= totalPrice %></div>
+                </div>
+                <form action="/payment/last-step" method="post">
+                    <input type="hidden" name="referrer" value="checkout">
+                    <button type="submit" class="btn btn-block btn-outline-success mt-3">
+                        <i class="fas fa-credit-card"></i> Buy
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <% } else { %>
+        <div class="col-md-12">
+            <h4 class="card-title card shadow-sm">
+                <div class="row pl-5 pr-5 p-3">
+                    <b>No products in the cart.</b>
+                </div>
+            </h4>
+        </div>
+        <% } %>
+
+    </div>
+</div>
+<%- include('./partials/footer'); -%>

@@ -1,0 +1,53 @@
+<%- include('./partials/header'); -%>
+
+<div class="container mt-3">
+    <% if ( sessionFlash && sessionFlash.message) { %>
+    <div class="row">
+        <div class="<%= sessionFlash.type === 'success' ? 'alert alert-success' : 'alert alert-danger' %> alert-dismissible fade show  col-md-12" role="alert">
+            <strong>MESSAGE!</strong> <%= sessionFlash.message %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+        </div>
+    </div>
+    <% } %>
+
+    <div class="row">
+        <% if (products) { %>
+        <div class="card-columns">
+            <% products.forEach(function(product){ %>
+            <div class="card shadow bg-white p-0">
+                <img src="/<%= product.photo %>" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title text-center font-weight-bold"><%= product.name %></h5>
+                    <div class="row m-1">
+                        <div class="col-md-12 text-center">Price: $<%= product.price %></div>
+                    </div>
+                    <div class="d-flex justify-content-around">
+                        <form action="/checkout" method="post" class=" col-md-5">
+                            <input type="hidden" name="id" value="<%= product.id %>">
+                            <button type="submit" class="btn btn-outline-success col-md-12 p-1">
+                                <i class="fas fa-shopping-basket"></i> Basket
+                            </button>
+                        </form>
+                        <form action="/payment/last-step" method="post" class="col-md-5">
+                            <input type="hidden" name="id" value="<%= product.id %>">
+                            <button type="submit" class="btn btn-outline-success col-md-12 p-1">
+                                <i class="fas fa-credit-card mr-1"></i> Buy
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <% } else { %>
+    <div class="col-md-12 text-center">
+        <p>All products are sold out.</p>
+    </div>
+    <% } %>
+
+</div>
+<%- include('./partials/footer'); -%>
